@@ -7,7 +7,7 @@ const PhoneIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" hei
 const SparkleIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><path d="M12 3L9.27 9.27L3 12l6.27 2.73L12 21l2.73-6.27L21 12l-6.27-2.73L12 3z"/><path d="M3 21l1.64-1.64"/><path d="M21 3l-1.64 1.64"/></svg> );
 
 // --- Reusable Components & Hooks ---
-const AnimatedSection = ({ children, className = '' }) => {
+const AnimatedSection = ({ children, className = '', id }) => {
     const ref = useRef(null);
     const [isVisible, setIsVisible] = useState(false);
     useEffect(() => {
@@ -15,7 +15,7 @@ const AnimatedSection = ({ children, className = '' }) => {
         if (ref.current) observer.observe(ref.current);
         return () => { if (ref.current) observer.unobserve(ref.current); };
     }, []);
-    return ( <section ref={ref} className={`py-20 px-4 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} ${className}`}><div className="max-w-6xl mx-auto">{children}</div></section> );
+    return ( <section id={id} ref={ref} className={`py-20 px-4 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} ${className}`}><div className="max-w-6xl mx-auto">{children}</div></section> );
 };
 
 const useGlow = (ref) => {
@@ -36,8 +36,32 @@ const SectionTitle = ({ children }) => ( <h2 className="text-4xl font-bold text-
 const Header = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     useEffect(() => { const handleScroll = () => setIsScrolled(window.scrollY > 10); window.addEventListener('scroll', handleScroll); return () => window.removeEventListener('scroll', handleScroll); }, []);
+    
     const navLinks = [ { href: '#synergy', label: 'Synergy' }, { href: '#experience', label: 'Experience' }, { href: '#projects', label: 'Projects' }, { href: '#education', label: 'Education' }, { href: '#contact', label: 'Contact' } ];
-    return ( <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-gray-900/80 backdrop-blur-lg shadow-lg' : 'bg-transparent'}`}><nav className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center"><a href="#hero" className="text-2xl font-bold text-white">HG<span className="text-cyan-400">.</span></a><ul className="hidden md:flex space-x-8">{navLinks.map(link => ( <li key={link.href}><a href={link.href} className="text-gray-300 hover:text-cyan-400 transition-colors duration-300">{link.label}</a></li> ))}</ul></nav></header> );
+
+    const handleNavClick = (e) => {
+        e.preventDefault();
+        const targetId = e.currentTarget.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    return ( 
+        <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-gray-900/80 backdrop-blur-lg shadow-lg' : 'bg-transparent'}`}>
+            <nav className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+                <a href="#hero" onClick={handleNavClick} className="text-2xl font-bold text-white">HG<span className="text-cyan-400">.</span></a>
+                <ul className="hidden md:flex space-x-8">
+                    {navLinks.map(link => ( 
+                        <li key={link.href}>
+                            <a href={link.href} onClick={handleNavClick} className="text-gray-300 hover:text-cyan-400 transition-colors duration-300">{link.label}</a>
+                        </li> 
+                    ))}
+                </ul>
+            </nav>
+        </header> 
+    );
 };
 
 const Hero = () => {
@@ -107,19 +131,33 @@ const Synergy = () => {
             }
         };
 
-         try {
-            const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+        try {
+            const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
             if (!apiKey) {
-                throw new Error("API key not found. Please check your environment variables.");
+                throw new Error("API key is missing. Please set VITE_GEMINI_API_KEY in your environment variables.");
             }
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            
             const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            
+            if (!response.ok) {
+                const errorBody = await response.json();
+                console.error("API Error Response:", errorBody);
+                throw new Error(`API request failed with status ${response.status}`);
+            }
+
             const result = await response.json();
+
+            if (!result.candidates || result.candidates.length === 0) {
+                console.error("Invalid API response structure:", result);
+                throw new Error("No candidates returned from API.");
+            }
+
             const jsonText = result.candidates[0].content.parts[0].text;
             setAnalysis(JSON.parse(jsonText));
         } catch (error) {
-            console.error("Error calling Gemini API for synergy analysis:", error);
-            setAnalysis({ error: "Could not generate analysis. Please try again." });
+            console.error("Error in handleSubmit:", error);
+            setAnalysis({ error: "Could not generate analysis. Please ensure the API key is set correctly and try again." });
         } finally {
             setIsLoading(false);
         }
