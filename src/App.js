@@ -1,26 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, getDoc, setDoc, increment, onSnapshot } from 'firebase/firestore';
-import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
-
-// --- Firebase Configuration ---
-// This is a fallback for local development. In the production environment,
-// __firebase_config and __app_id will be provided globally.
-const fallbackFirebaseConfig = {
-    apiKey: "AIzaSyDzADj6SW5fFOVXpB_uIc_0_ywkt2NCIXA",
-    authDomain: "harshit-portfolio-4a449.firebaseapp.com",
-    projectId: "harshit-portfolio-4a449",
-    storageBucket: "harshit-portfolio-4a449.appspot.com",
-    messagingSenderId: "136119858835",
-    appId: "1:136119858835:web:efe97aaedbedfeb536ff66"
-};
 
 // --- ICONS ---
 const LinkedinIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="transition-colors duration-300 group-hover:fill-cyan-400"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg> );
 const MailIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg> );
 const PhoneIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> );
 const SparkleIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><path d="M12 3L9.27 9.27L3 12l6.27 2.73L12 21l2.73-6.27L21 12l-6.27-2.73L12 3z"/><path d="M3 21l1.64-1.64"/><path d="M21 3l-1.64 1.64"/></svg> );
-const HeartIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> );
 
 // --- Reusable Components & Hooks ---
 const AnimatedSection = ({ children, className = '' }) => {
@@ -336,30 +320,9 @@ const Footer = () => ( <footer className="bg-gray-900 py-6 text-center text-gray
 // --- Main App Component ---
 export default function App() {
     const [isLoading, setIsLoading] = useState(true);
-    const [firebase, setFirebase] = useState({ db: null, isAuthReady: false });
 
     useEffect(() => {
         const timer = setTimeout(() => setIsLoading(false), 2500);
-        
-        try {
-            const firebaseConfigToUse = typeof window.__firebase_config !== 'undefined' ? JSON.parse(window.__firebase_config) : fallbackFirebaseConfig;
-            const app = initializeApp(firebaseConfigToUse);
-            const auth = getAuth(app);
-            const firestore = getFirestore(app);
-
-            const unsubscribe = onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    console.log("Firebase user authenticated.");
-                    setFirebase({ db: firestore, isAuthReady: true });
-                    unsubscribe();
-                } else {
-                    signInAnonymously(auth).catch(error => console.error("Firebase sign-in failed:", error));
-                }
-            });
-        } catch (e) {
-            console.error("Firebase initialization error:", e);
-        }
-
         return () => clearTimeout(timer);
     }, []);
 
@@ -400,7 +363,6 @@ export default function App() {
                     <Contact />
                 </main>
                 <Footer />
-                {/* The LoveCounter has been removed from here */}
             </div>
         </div>
     );
