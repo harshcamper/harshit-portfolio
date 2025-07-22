@@ -132,7 +132,7 @@ const Synergy = () => {
         };
 
         try {
-            const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+            const apiKey = import.meta.env.VITE_GEMINI_ACCESS_STRING;
             if (!apiKey) {
                 throw new Error("API key is missing. Please set VITE_GEMINI_API_KEY in your environment variables.");
             }
