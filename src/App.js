@@ -107,8 +107,11 @@ const Synergy = () => {
             }
         };
 
-        try {
-            const apiKey = "";
+         try {
+            const apiKey = process.env.REACT_APP_GEMINI_KEY;
+            if (!apiKey) {
+                throw new Error("API key not found. Please check your environment variables.");
+            }
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
             const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const result = await response.json();
