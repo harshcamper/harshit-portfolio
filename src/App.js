@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, getDoc, setDoc, increment, onSnapshot } from 'firebase/firestore';
-import { getAuth, signInAnonymously } from 'firebase/auth';
+import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 
 // --- Firebase Configuration ---
 // This is a fallback for local development. In the production environment,
 // __firebase_config and __app_id will be provided globally.
 const fallbackFirebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "default-app-id"
+    apiKey: "AIzaSyDzADj6SW5fFOVXpB_uIc_0_ywkt2NCIXA",
+    authDomain: "harshit-portfolio-4a449.firebaseapp.com",
+    projectId: "harshit-portfolio-4a449",
+    storageBucket: "harshit-portfolio-4a449.appspot.com",
+    messagingSenderId: "136119858835",
+    appId: "1:136119858835:web:efe97aaedbedfeb536ff66"
 };
 
 // --- ICONS ---
@@ -333,104 +333,32 @@ const Contact = () => (
 
 const Footer = () => ( <footer className="bg-gray-900 py-6 text-center text-gray-500"><p>&copy; {new Date().getFullYear()} Harshit Govindarajan. All rights reserved.</p></footer> );
 
-const LoveCounter = ({ db }) => {
-    const [loveCount, setLoveCount] = useState(0);
-    const [showCount, setShowCount] = useState(false);
-    const [hasBeenClicked, setHasBeenClicked] = useState(false);
-    const [burstingHearts, setBurstingHearts] = useState([]);
-    const buttonRef = useRef(null);
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    const counterRef = doc(db, `/artifacts/${appId}/public/data/portfolio-stats/love-counter`);
-
-    useEffect(() => {
-        const unsubscribe = onSnapshot(counterRef, (docSnap) => {
-            if (docSnap.exists()) {
-                setLoveCount(docSnap.data().count);
-            } else {
-                setDoc(counterRef, { count: 0 });
-            }
-        });
-        return () => unsubscribe();
-    }, [counterRef]);
-
-    const handleClick = async () => {
-        if (hasBeenClicked) return;
-        setHasBeenClicked(true);
-
-        const buttonRect = buttonRef.current.getBoundingClientRect();
-        const newHearts = Array.from({ length: 10 }).map(() => ({
-            id: Math.random(),
-            x: buttonRect.left + buttonRect.width / 2,
-            y: buttonRect.top + buttonRect.height / 2,
-            randX: (Math.random() - 0.5) * 2,
-            randY: (Math.random() - 0.5) * 2,
-            randDelay: Math.random()
-        }));
-        setBurstingHearts(newHearts);
-        setTimeout(() => setBurstingHearts([]), 1000);
-
-        await setDoc(counterRef, { count: increment(1) }, { merge: true });
-
-        setShowCount(true);
-        setTimeout(() => {
-            setShowCount(false);
-        }, 5000);
-    };
-
-    return (
-        <>
-            <button
-                ref={buttonRef}
-                onClick={handleClick}
-                className={`fixed bottom-6 right-6 flex items-center justify-center bg-gray-800/50 border border-gray-700 rounded-full shadow-lg transition-all duration-500 ease-in-out transform hover:scale-110 z-40 overflow-hidden ${hasBeenClicked ? 'cursor-not-allowed' : ''} ${showCount ? 'w-auto px-6 h-16' : 'w-16 h-16'}`}
-            >
-                <div className="relative flex items-center justify-center">
-                    <div className={`transition-opacity duration-300 ${showCount ? 'opacity-0' : 'opacity-100'}`}>
-                        <HeartIcon className="text-red-500" />
-                    </div>
-                    <div className={`absolute whitespace-nowrap transition-opacity duration-300 ${showCount ? 'opacity-100' : 'opacity-0'}`}>
-                        <span className="font-bold text-lg text-white">{loveCount} people loved this! 🎉</span>
-                    </div>
-                </div>
-            </button>
-            {burstingHearts.map(heart => (
-                <div key={heart.id} className="heart-particle" style={{ 
-                    left: heart.x, 
-                    top: heart.y,
-                    '--random-x': heart.randX,
-                    '--random-y': heart.randY,
-                    '--random-delay': heart.randDelay
-                }}>
-                    <HeartIcon className="text-red-500" />
-                </div>
-            ))}
-        </>
-    );
-};
-
 // --- Main App Component ---
 export default function App() {
     const [isLoading, setIsLoading] = useState(true);
-    const [db, setDb] = useState(null);
+    const [firebase, setFirebase] = useState({ db: null, isAuthReady: false });
 
     useEffect(() => {
         const timer = setTimeout(() => setIsLoading(false), 2500);
         
-        const initFirebase = async () => {
-            try {
-                const firebaseConfigToUse = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : fallbackFirebaseConfig;
-                const app = initializeApp(firebaseConfigToUse);
-                const auth = getAuth(app);
-                await signInAnonymously(auth);
-                console.log("Firebase signed in anonymously.");
-                const firestore = getFirestore(app);
-                setDb(firestore);
-            } catch (e) {
-                console.error("Firebase initialization error:", e);
-            }
-        };
+        try {
+            const firebaseConfigToUse = typeof window.__firebase_config !== 'undefined' ? JSON.parse(window.__firebase_config) : fallbackFirebaseConfig;
+            const app = initializeApp(firebaseConfigToUse);
+            const auth = getAuth(app);
+            const firestore = getFirestore(app);
 
-        initFirebase();
+            const unsubscribe = onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log("Firebase user authenticated.");
+                    setFirebase({ db: firestore, isAuthReady: true });
+                    unsubscribe();
+                } else {
+                    signInAnonymously(auth).catch(error => console.error("Firebase sign-in failed:", error));
+                }
+            });
+        } catch (e) {
+            console.error("Firebase initialization error:", e);
+        }
 
         return () => clearTimeout(timer);
     }, []);
@@ -450,24 +378,6 @@ export default function App() {
                 .animate-pulse-slow { animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
                 @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
                 .animate-fade-in-up { animation: fade-in-up 0.5s ease-out backwards; }
-                
-                .heart-particle {
-                    position: fixed;
-                    z-index: 9999;
-                    pointer-events: none;
-                    animation: heart-burst 1s ease-out forwards;
-                    animation-delay: calc(var(--random-delay) * 100ms);
-                }
-                @keyframes heart-burst {
-                    0% {
-                        transform: translate(-50%, -50%) scale(0.8);
-                        opacity: 1;
-                    }
-                    100% {
-                        transform: translate(calc(-50% + var(--random-x) * 80px), calc(-50% + var(--random-y) * 80px - 80px)) scale(0);
-                        opacity: 0;
-                    }
-                }
             `}</style>
             
             <div className={`fixed inset-0 z-[100] flex items-center justify-center bg-gray-900 transition-opacity duration-500 ease-out ${isLoading ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
@@ -490,7 +400,7 @@ export default function App() {
                     <Contact />
                 </main>
                 <Footer />
-                {db && <LoveCounter db={db} />}
+                {/* The LoveCounter has been removed from here */}
             </div>
         </div>
     );
