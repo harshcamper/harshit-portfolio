@@ -122,31 +122,80 @@ const Synergy = () => {
         setIsLoading(true);
         setAnalysis(null);
 
-        const prompt = `Based on my resume context, evaluate my fit for the following job description. My resume context: "${resumeContext}". Job Description: "${jobDesc}". Provide a synergy score from 0 to 100 and a brief justification for why I am a good fit, highlighting key matching skills and experiences.`;
+        const prompt = `Based on my resume context, evaluate my fit for the following job description and return a JSON response.
+
+My resume context: "${resumeContext}"
+
+Job Description: "${jobDesc}"
+
+Please analyze the alignment and provide:
+1. A synergy score from 0 to 100 (where 100 is perfect match)
+2. A detailed justification explaining why I am a good fit, highlighting specific matching skills, experiences, and qualifications
+
+Return the response in this exact JSON format:
+{
+  "synergyScore": [number between 0-100],
+  "justification": "[detailed explanation of the fit, mentioning specific skills and experiences that match]"
+}`;
         const payload = {
             contents: [{ role: "user", parts: [{ text: prompt }] }],
             generationConfig: {
                 responseMimeType: "application/json",
-                responseSchema: { type: "OBJECT", properties: { "synergyScore": { type: "NUMBER" }, "justification": { type: "STRING" } } }
+                responseSchema: { 
+                    type: "OBJECT", 
+                    properties: { 
+                        "synergyScore": { 
+                            type: "INTEGER",
+                            description: "A score from 0 to 100 indicating how well the candidate fits the job"
+                        }, 
+                        "justification": { 
+                            type: "STRING",
+                            description: "A detailed explanation of why the candidate is a good fit for the role"
+                        } 
+                    },
+                    required: ["synergyScore", "justification"]
+                }
             }
         };
 
         try {
             const apiKey = import.meta.env.VITE_GEMINI_ACCESS_STRING;
-            if (!apiKey) {
-                throw new Error("API key is missing. Please set VITE_GEMINI_API_KEY in your environment variables.");
-            }
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            console.log("API Key present:", !!apiKey); // Debug log
             
-            const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            if (!apiKey) {
+                throw new Error("Access string is missing. Please set VITE_GEMINI_ACCESS_STRING in your environment variables.");
+            }
+            
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            console.log("Making request to:", apiUrl.replace(apiKey, "[REDACTED]"));
+            
+            const response = await fetch(apiUrl, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(payload) 
+            });
+            
+            console.log("Response status:", response.status);
             
             if (!response.ok) {
-                const errorBody = await response.json();
-                console.error("API Error Response:", errorBody);
-                throw new Error(`API request failed with status ${response.status}`);
+                const errorText = await response.text();
+                console.error("API Error Response:", errorText);
+                let errorMsg = `API request failed with status ${response.status}`;
+                
+                try {
+                    const errorBody = JSON.parse(errorText);
+                    if (errorBody.error && errorBody.error.message) {
+                        errorMsg += `: ${errorBody.error.message}`;
+                    }
+                } catch (e) {
+                    errorMsg += `: ${errorText}`;
+                }
+                
+                throw new Error(errorMsg);
             }
 
             const result = await response.json();
+            console.log("API Response structure:", Object.keys(result));
 
             if (!result.candidates || result.candidates.length === 0) {
                 console.error("Invalid API response structure:", result);
@@ -154,10 +203,25 @@ const Synergy = () => {
             }
 
             const jsonText = result.candidates[0].content.parts[0].text;
+            console.log("Received JSON text:", jsonText);
             setAnalysis(JSON.parse(jsonText));
         } catch (error) {
-            console.error("Error in handleSubmit:", error);
-            setAnalysis({ error: "Could not generate analysis. Please ensure the API key is set correctly and try again." });
+            console.error("Detailed error in handleSubmit:", error);
+            let errorMessage = "Could not generate analysis. ";
+            
+            if (error.message.includes("Access string is missing")) {
+                errorMessage += "Please set VITE_GEMINI_ACCESS_STRING in your environment variables.";
+            } else if (error.message.includes("API request failed")) {
+                errorMessage += `API Error: ${error.message}`;
+            } else if (error.message.includes("Failed to fetch")) {
+                errorMessage += "Network error. Please check your internet connection.";
+            } else {
+                errorMessage += `Error: ${error.message}`;
+            }
+            
+            setAnalysis({ error: errorMessage });
+            console.error(errorMessage);
+            console.log(analysis)
         } finally {
             setIsLoading(false);
         }
