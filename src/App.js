@@ -108,7 +108,7 @@ const Synergy = () => {
         };
 
          try {
-            const apiKey = process.env.REACT_APP_GEMINI_KEY;
+            const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
             if (!apiKey) {
                 throw new Error("API key not found. Please check your environment variables.");
             }
