@@ -104,7 +104,7 @@ const Hero = () => {
                     <div className="absolute inset-0 rounded-full animate-spin-slow" style={{ background: 'conic-gradient(from 180deg at 50% 50%, #00c6ff, #0072ff, #e000ff, #ff00a0, #00c6ff)' }}></div>
                     <div className="absolute inset-2 bg-gray-900 rounded-full flex items-center justify-center">
                         <img src="https://i.imgur.com/39Yg2tS.png" alt="A professional headshot of Harshit Govindarajan, smiling, in a suit and tie." className="w-full h-full object-cover rounded-full" />
-                    </div>
+ <img src="/public/IMG_7615.png" alt="A professional headshot of Harshit Govindarajan, smiling, in a suit and tie." className="w-full h-full object-cover rounded-full" />                    </div>
                 </div>
             </div>
         </section>
@@ -344,25 +344,25 @@ const ProjectCard = ({ title, description, link }) => {
 const Tools = () => {
     const tools = [
         // Priority Tools
-        { name: 'Figma', icon: 'https://cdn.simpleicons.org/figma/FFFFFF' },
-        { name: 'Jira', icon: 'https://cdn.simpleicons.org/jira/0052CC' },
-        { name: 'Miro', icon: 'https://cdn.simpleicons.org/miro/FFFFFF' },
-        { name: 'Whimsical', icon: 'https://d33v4394jhl8k0.cloudfront.net/docs/assets/596a543e2c7d3a0991008782/images/1657064325441/icon-whimsical-outline.svg' },
-        { name: 'CleverTap', icon: 'https://www.clevertap.com/wp-content/themes/clevertap-new/images/CleverTap_logo.svg' },
+        { name: 'Figma' },
+        { name: 'Jira' },
+        { name: 'Miro' },
+        { name: 'Whimsical' },
+        { name: 'CleverTap' },
         // Existing & New Tools
-        { name: 'Python', icon: 'https://cdn.simpleicons.org/python/3776AB' },
-        { name: 'SQL', icon: 'https://cdn.simpleicons.org/postgresql/FFFFFF' },
-        { name: 'Power BI', icon: 'https://cdn.simpleicons.org/powerbi/F2C811' },
-        { name: 'Tableau', icon: 'https://cdn.simpleicons.org/tableau/E97627' },
-        { name: 'Amplitude', icon: 'https://cdn.simpleicons.org/amplitude/1E2329' },
-        { name: 'Mixpanel', icon: 'https://cdn.simpleicons.org/mixpanel/0094FF' },
-        { name: 'Google Analytics', icon: 'https://cdn.simpleicons.org/googleanalytics/E37400' },
-        { name: 'AppsFlyer', icon: 'https://www.appsflyer.com/wp-content/themes/appsflyer-v2/assets/src/img/logos/logo.svg' },
-        { name: 'Azure DevOps', icon: 'https://cdn.simpleicons.org/azuredevops/0078D7' },
-        { name: 'Adobe', icon: 'https://cdn.simpleicons.org/adobe/FF0000' },
-        { name: 'PowerPoint', icon: 'https://cdn.simpleicons.org/microsoftpowerpoint/CB4E22' },
-        { name: 'Excel', icon: 'https://cdn.simpleicons.org/microsoftexcel/217346' },
-        { name: 'Notion', icon: 'https://cdn.simpleicons.org/notion/000000' },
+        { name: 'Python' },
+        { name: 'SQL' },
+        { name: 'Power BI' },
+        { name: 'Tableau' },
+        { name: 'Amplitude' },
+        { name: 'Mixpanel' },
+        { name: 'Google Analytics' },
+        { name: 'AppsFlyer' },
+        { name: 'Azure DevOps' },
+        { name: 'Adobe' },
+        { name: 'PowerPoint' },
+        { name: 'Excel' },
+        { name: 'Notion' },
     ];
 
     return (
@@ -370,11 +370,7 @@ const Tools = () => {
             <SectionTitle>My Toolkit</SectionTitle>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
                 {tools.map((tool) => (
-                    <div key={tool.name} className="bg-gray-800/50 rounded-lg flex flex-col items-center justify-center p-6 transition-transform transform hover:scale-110">
-                        <img 
-                            src={tool.icon} 
-                            alt={tool.name} 
-                            className={`h-12 w-12 object-contain ${tool.invert ? 'filter invert' : ''}`} 
+                    <div key={tool.name} className="bg-gray-800/50 rounded-lg flex items-center justify-center p-6 transition-transform transform hover:scale-110 h-24"> {/* Increased height for better centering without image */}
                         />
                         <span className="mt-4 text-white text-center">{tool.name}</span>
                     </div>
