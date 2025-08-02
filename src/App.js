@@ -105,6 +105,7 @@ const Hero = () => {
                     <div className="absolute inset-2 bg-gray-900 rounded-full flex items-center justify-center">
                         <img src="https://i.imgur.com/39Yg2tS.png" alt="A professional headshot of Harshit Govindarajan, smiling, in a suit and tie." className="w-full h-full object-cover rounded-full" />
                     </div>
+                </div>
             </div>
         </section>
     );
