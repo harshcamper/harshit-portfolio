@@ -366,11 +366,10 @@ const Tools = () => {
     return (
         <AnimatedSection id="tools" className="bg-gray-900">
             <SectionTitle>My Toolkit</SectionTitle>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8">
+            <div className="flex flex-wrap justify-center gap-4">
                 {tools.map((tool) => (
-                    <div key={tool.name} className="bg-gray-800/50 rounded-lg flex items-center justify-center p-6 transition-transform transform hover:scale-110 h-24"> {/* Increased height for better centering without image */}
-                        />
-                        <span className="mt-4 text-white text-center">{tool.name}</span>
+                    <div key={tool.name} className="bg-gray-800/50 text-white text-sm px-4 py-2 rounded-full transition-all duration-300 border border-gray-700 cursor-default hover:shadow-[0_0_20px_rgba(6,182,212,0.6)] hover:border-cyan-500">
+                        {tool.name}
                     </div>
                 ))}
             </div>
