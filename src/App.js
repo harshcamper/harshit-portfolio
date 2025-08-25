@@ -101,8 +101,8 @@ const Hero = () => {
                 </div>
                 <div className="relative w-64 h-64 md:w-80 md:h-80 mx-auto order-1 md:order-2">
                     <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-500 animate-pulse-slow blur-xl"></div>
-                    <div className="absolute inset-0 rounded-xl animate-spin-slow" style={{ background: 'conic-gradient(from 180deg at 50% 50%, #00c6ff, #0072ff, #e000ff, #ff00a0, #00c6ff)' }}></div>
-                    <div className="absolute inset-2 bg-gray-900 rounded-xl flex items-center justify-center">
+                    {/* Removed original spinning animation */}
+                    <div className="absolute inset-0 bg-gray-900 rounded-xl flex items-center justify-center overflow-hidden">
                         <img src="/IMG_7615.png" alt="A professional headshot of Harshit Govindarajan, smiling, in a suit and tie." className="w-full h-full object-cover rounded-xl" />
                     </div>
                 </div>
@@ -261,11 +261,11 @@ const Experience = () => {
     const workExperience = [
         {
             role: 'Associate Consultant',
-            company: 'Infosys Consulting',
-            date: 'JUL 2024 – PRESENT',
+ company: 'Infosys Consulting | Business Consultant',
+ date: 'June 2025 - present',
             points: [
-                "Currently engaged in exciting new challenges at Infosys Consulting.",
-                "Details to be updated as the role progresses."
+ "Managing a $2M+ digital transformation program for a global CPG brand, driving 10 initiatives across 5 MENAP regions projected to deliver $200M+ in revenue impact, by leading cross-functional teams and ensuring program execution across markets.",
+
             ]
         },
         { 
@@ -273,19 +273,18 @@ const Experience = () => {
         company: 'Kofluence Tech Ltd', 
         date: 'JAN 2021 – APR 2024', 
         points: [
-            "<strong>End-to-End B2C App Ownership:</strong> Led the mobile app lifecycle from ideation (user interviews, market research, journey mapping) to launch, achieving 1M+ downloads and 100K+ MAU by focusing on user engagement and retention.",
-            "<strong>Performance Marketing Platform:</strong> Headed development of a campaign management platform (CPC, CPA, CPM), integrating Affise and Appsflyer for analytics and Cashfree for automated payouts.",
-            "<strong>Agile Sprint Management:</strong> Managed product sprints using Scrum in Azure DevOps and Jira, conducting standups, backlog grooming, and UAT to ensure timely, high-quality delivery.",
-            "<strong>Product Documentation & Wireframing:</strong> Authored PRDs, defined product vision, and translated requirements into user stories. Designed prototypes and user flows in Figma, Miro, and Whimsical."
+            "<strong>B2C Mobile App Ownership:</strong> Led end-to-end lifecycle from MVP to scale using Design Thinking & A/B testing. Drove 1M+ downloads, 100K+ MAU, and 88% retention, adding 1.6M+ users to the database in 1 year.",
+            "<strong>Performance Marketing Platform:</strong> Managed a 10-member team to build CPC/CPA/CPM platform with Affise & Appsflyer. Opened a new ₹50 Cr+ annual revenue stream, onboarding 30+ enterprise clients (EdTech, FinTech, Retail, CPG, Automobile).",
+            "<strong>Agile Product Development:</strong> Owned PRDs, roadmaps, sprints, and backlog grooming. Introduced structured user stories & acceptance criteria → 20% increase in sprint velocity.",
+            "<strong>Social Commerce for Pizza Chain:</strong> Researched, conceptualized & launched “Buy Now, Pay Social”, boosting engagement by 15% and adding 23K+ active users.",
+            "<strong>Omnichannel Marketing:</strong> Automated WhatsApp, Email, SMS & Push campaigns with customer journeys and drip flows → 90% uplift in campaign effectiveness.",
+            "<strong>AI-Driven Workflows:</strong> Launched Vertex AI–based approvals and Cashfree payouts, automating 150+ monthly campaigns. Also led change management for 200+ employees, achieving 85% efficiency gains, increasing decision making speed by 100%."
         ],
         morePoints: [
-            "<strong>Marketing Automation Strategy:</strong> Led the implementation of an omnichannel marketing system (WhatsApp, Email, SMS, Push) using CleverTap and MoEngage to craft personalized customer journeys.",
-            "<strong>Advanced Analytics & Data Integration:</strong> Enabled advanced analytics by integrating data from Meta, YouTube, and Google Analytics. Built real-time dashboards for business stakeholders.",
-            "<strong>DIY SaaS Martech Platform:</strong> Collaborated on a self-serve tool for D2C brands to manage influencer campaigns, reducing campaign setup TAT from 4 days to under 2 hours for 30+ brands.",
             "<strong>AI-Driven WhatsApp Bot:</strong> Designed and launched an AI-powered WhatsApp bot with Gupshup to handle customer queries, automating responses for 350+ queries daily.",
-            "<strong>Product Vision & Roadmap:</strong> Partnered with leadership to shape product strategy, define quarterly roadmaps, and align feature prioritization with business objectives.",
-            "<strong>Internal Operations Transformation:</strong> Launched an AI-enabled system that automated workflows for 200+ monthly campaigns, successfully onboarding and training over 200 employees.", // Added back
-            "<strong>Go-to-Market Strategy:</strong> Executed GTM strategies for a new mobile app, including SEO, social media ads, and ASO, achieving a 4.5-star app rating.",
+            "<strong>Additional Engagement Highlights</strong>",
+            "<strong>Change Management:</strong> Designed training & communication plans to onboard 200+ employees, achieving 95% adoption in 2 quarters.",
+            "<strong>Leadership Dashboards:</strong> Built real-time dashboards (Mixpanel, GA, Clevertap, mParticle), giving leadership greater visibility into campaign & customer performance.",
             "<strong>Customer Support System:</strong> Built a live support interface using Sendgrid and Gupshup and created a Gitbook knowledge base to streamline query resolution.",
             "<strong>Standardized Testing Workflows:</strong> Worked with the QA team to define test plans, establish regression testing cycles, and streamline defect reporting to ensure product quality."
         ] 
@@ -470,8 +469,6 @@ export default function App() {
                 @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
                 .animate-scroll { animation: scroll 40s linear infinite; }
                 @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-                .animate-spin-slow { animation: spin-slow 10s linear infinite; }
-                @keyframes pulse-slow { 50% { opacity: 0.5; } }
                 .animate-pulse-slow { animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
                 @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
                 .animate-fade-in-up { animation: fade-in-up 0.5s ease-out backwards; }
