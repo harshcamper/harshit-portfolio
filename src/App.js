@@ -100,10 +100,10 @@ const Hero = () => {
                     </div>
                 </div>
                 <div className="relative w-64 h-64 md:w-80 md:h-80 mx-auto order-1 md:order-2">
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500 animate-pulse-slow blur-xl"></div>
-                    <div className="absolute inset-0 rounded-full animate-spin-slow" style={{ background: 'conic-gradient(from 180deg at 50% 50%, #00c6ff, #0072ff, #e000ff, #ff00a0, #00c6ff)' }}></div>
-                    <div className="absolute inset-2 bg-gray-900 rounded-full flex items-center justify-center">
-                        <img src="https://i.imgur.com/39Yg2tS.png" alt="A professional headshot of Harshit Govindarajan, smiling, in a suit and tie." className="w-full h-full object-cover rounded-full" />
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-500 animate-pulse-slow blur-xl"></div>
+                    <div className="absolute inset-0 rounded-xl animate-spin-slow" style={{ background: 'conic-gradient(from 180deg at 50% 50%, #00c6ff, #0072ff, #e000ff, #ff00a0, #00c6ff)' }}></div>
+                    <div className="absolute inset-2 bg-gray-900 rounded-xl flex items-center justify-center">
+                        <img src="/IMG_7615.png" alt="A professional headshot of Harshit Govindarajan, smiling, in a suit and tie." className="w-full h-full object-cover rounded-xl" />
                     </div>
                 </div>
             </div>
@@ -256,7 +256,19 @@ Return the response in this exact JSON format:
 };
 
 const Experience = () => {
-    const experience = { 
+    const [showMoreKofluence, setShowMoreKofluence] = useState(false);
+
+    const workExperience = [
+        {
+            role: 'Associate Consultant',
+            company: 'Infosys Consulting',
+            date: 'JUL 2024 – PRESENT',
+            points: [
+                "Currently engaged in exciting new challenges at Infosys Consulting.",
+                "Details to be updated as the role progresses."
+            ]
+        },
+        { 
         role: 'Product Owner', 
         company: 'Kofluence Tech Ltd', 
         date: 'JAN 2021 – APR 2024', 
@@ -264,34 +276,56 @@ const Experience = () => {
             "<strong>End-to-End B2C App Ownership:</strong> Led the mobile app lifecycle from ideation (user interviews, market research, journey mapping) to launch, achieving 1M+ downloads and 100K+ MAU by focusing on user engagement and retention.",
             "<strong>Performance Marketing Platform:</strong> Headed development of a campaign management platform (CPC, CPA, CPM), integrating Affise and Appsflyer for analytics and Cashfree for automated payouts.",
             "<strong>Agile Sprint Management:</strong> Managed product sprints using Scrum in Azure DevOps and Jira, conducting standups, backlog grooming, and UAT to ensure timely, high-quality delivery.",
-            "<strong>Product Documentation & Wireframing:</strong> Authored PRDs, defined product vision, and translated requirements into user stories. Designed prototypes and user flows in Figma, Miro, and Whimsical.",
+            "<strong>Product Documentation & Wireframing:</strong> Authored PRDs, defined product vision, and translated requirements into user stories. Designed prototypes and user flows in Figma, Miro, and Whimsical."
+        ],
+        morePoints: [
             "<strong>Marketing Automation Strategy:</strong> Led the implementation of an omnichannel marketing system (WhatsApp, Email, SMS, Push) using CleverTap and MoEngage to craft personalized customer journeys.",
             "<strong>Advanced Analytics & Data Integration:</strong> Enabled advanced analytics by integrating data from Meta, YouTube, and Google Analytics. Built real-time dashboards for business stakeholders.",
             "<strong>DIY SaaS Martech Platform:</strong> Collaborated on a self-serve tool for D2C brands to manage influencer campaigns, reducing campaign setup TAT from 4 days to under 2 hours for 30+ brands.",
             "<strong>AI-Driven WhatsApp Bot:</strong> Designed and launched an AI-powered WhatsApp bot with Gupshup to handle customer queries, automating responses for 350+ queries daily.",
             "<strong>Product Vision & Roadmap:</strong> Partnered with leadership to shape product strategy, define quarterly roadmaps, and align feature prioritization with business objectives.",
-            "<strong>Internal Operations Transformation:</strong> Launched an AI-enabled system that automated workflows for 200+ monthly campaigns, successfully onboarding and training over 200 employees.",
+            "<strong>Internal Operations Transformation:</strong> Launched an AI-enabled system that automated workflows for 200+ monthly campaigns, successfully onboarding and training over 200 employees.", // Added back
             "<strong>Go-to-Market Strategy:</strong> Executed GTM strategies for a new mobile app, including SEO, social media ads, and ASO, achieving a 4.5-star app rating.",
             "<strong>Customer Support System:</strong> Built a live support interface using Sendgrid and Gupshup and created a Gitbook knowledge base to streamline query resolution.",
             "<strong>Standardized Testing Workflows:</strong> Worked with the QA team to define test plans, establish regression testing cycles, and streamline defect reporting to ensure product quality."
         ] 
-    };
+    }];
 
     return (
         <AnimatedSection id="experience" className="bg-gray-900">
             <SectionTitle>Work Experience</SectionTitle>
-            <div className="relative border-l-2 border-cyan-500/30 pl-10">
-                <div className="relative">
-                    <div className="absolute -left-[49px] top-1 w-4 h-4 bg-cyan-500 rounded-full border-4 border-gray-900"></div>
-                    <h3 className="text-2xl font-semibold text-cyan-400">{experience.role}</h3>
-                    <p className="text-gray-400 font-medium my-1">{experience.company} | {experience.date}</p>
+            <div className="relative border-l-2 border-cyan-500/30 pl-10 space-y-12">
+                {workExperience.map((job, index) => (
+                <div key={index} className="relative">
+                    <div className="absolute -left-[49px] top-1 w-4 h-4 bg-cyan-500 rounded-full border-4 border-gray-900 z-10"></div>
+                    <h3 className="text-2xl font-semibold text-cyan-400">{job.role}</h3>
+                    <p className="text-gray-400 font-medium my-1">{job.company} | {job.date}</p>
                     <ul className="list-disc list-inside text-gray-400 space-y-3 mt-4">
-                        {experience.points.map((point, i) => 
+                        {job.points.map((point, i) => 
                             <li key={i} dangerouslySetInnerHTML={{ __html: point }}></li>
                         )}
                     </ul>
+                    {job.morePoints && job.morePoints.length > 0 && (
+                        <>
+                            {showMoreKofluence && (
+                                <ul className="list-disc list-inside text-gray-400 space-y-3 mt-3">
+                                    {job.morePoints.map((point, i) => 
+                                        <li key={i + job.points.length} dangerouslySetInnerHTML={{ __html: point }}></li>
+                                    )}
+                                </ul>
+                            )}
+                            <button 
+                                onClick={() => setShowMoreKofluence(!showMoreKofluence)} 
+                                className="mt-4 text-cyan-400 hover:text-cyan-300 transition-colors duration-300 text-sm"
+                            >
+                                {showMoreKofluence ? 'Read Less' : 'Read More'}
+                            </button>
+                        </>
+                    )}
                 </div>
+                ))}
             </div>
+
         </AnimatedSection>
     );
 };
